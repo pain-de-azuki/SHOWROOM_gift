@@ -12,6 +12,9 @@ def main():
     json_log = r.json()
     json_list = r2.json()
 
+    gift_master_list = []
+    gift_master_list.extend(json_list.get('enquete'))
+    gift_master_list.extend(json_list.get('normal'))
 
     for a_gift in json_log['gift_log']:
         pprint.pprint('name:{}'.format(a_gift['name']))
@@ -20,13 +23,9 @@ def main():
         time = datetime.fromtimestamp(a_gift['created_at'])
         pprint.pprint('created_at:{}'.format(time))
 
-        for list_enquete in json_list['enquete']:
-            if a_gift['gift_id'] == list_enquete['gift_id'] :
-                pprint.pprint('gift_name:{}'.format(list_enquete['gift_name']))
-
-        for list_normal in json_list['normal']:
-            if a_gift['gift_id'] == list_normal['gift_id'] :
-                pprint.pprint('gift_name:{}'.format(list_normal['gift_name']))
+        gift_name = next(filter(lambda x: x.get('gift_id') == a_gift.get('gift_id'), gift_master_list)).get('gift_name', '')
+        if gift_name != '':
+            pprint.pprint('gift_name:{}'.format(gift_name))
 
 if __name__ == "__main__":
     main()
